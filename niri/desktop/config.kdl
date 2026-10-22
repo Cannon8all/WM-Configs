@@ -1,0 +1,415 @@
+include "colors.kdl"
+//
+///////////////
+//  STARTUP  //
+///////////////
+
+spawn-at-startup "otter-wallpaper"
+spawn-at-startup "otter-osd"
+spawn-at-startup "otter-notifications"
+spawn-at-startup "otter-polkit"
+spawn-at-startup "otter-idle"
+spawn-at-startup "otter-bar"
+spawn-at-startup "otter-weather" "--watch" "900" "--write-cache"
+spawn-at-startup "otter-clip" "daemon"
+spawn-at-startup "otter-theme-gen"
+
+
+spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP"
+spawn-at-startup "dbus-update-activation-environment" "--systemd" "DISPLAY" "WAYLAND_DISPLAY"
+spawn-at-startup "systemctl" "--user" "import-environment" "DISPLAY" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP"
+spawn-at-startup "xdg-user-dirs-update"
+spawn-at-startup "dconf" "write" "/org/gnome/desktop/interface/cursor-size" "24"
+spawn-at-startup "gsettings" "set" "org.cinnamon.desktop.default-applications.terminal" "exec" "otter-term"
+
+
+///////////////
+//  KEYBOARD  //
+////////////////
+
+input {
+    keyboard {
+        xkb {
+            layout "us" 
+        }
+        repeat-delay 300
+        repeat-rate 30
+	numlock
+    }
+
+
+////////////////
+//  TOUCHPAD  //
+////////////////
+
+    touchpad {
+        tap
+        natural-scroll
+    }
+
+
+/////////////
+//  MOUSE  //
+/////////////
+
+    mouse {
+        accel-profile "flat"
+    }
+    focus-follows-mouse max-scroll-amount="0%"
+}
+
+
+////////////////
+//  DISPLAYS  //
+////////////////
+
+output "DP-1" {
+    mode "2560x1440@165.000"
+    scale 1
+    transform "normal"
+    variable-refresh-rate on-demand=true
+    position x=0 y=0
+}
+
+output "DP-3" {
+    mode "2560x1440@59.951"
+    scale 1
+    transform "normal"
+//  variable-refresh-rate on-demand=true
+    position x=2560 y=0
+}
+
+
+///////////////////////////
+// Overview / wallpaper  //
+///////////////////////////
+
+layer-rule {
+    match namespace="^otter-wallpaper*"
+    place-within-backdrop true
+}
+
+
+overview {
+  zoom 0.4
+  backdrop-color "#262626"
+  
+  workspace-shadow {
+//    off
+    softness 70
+    spread 20
+    offset x=0 y=20
+    color "#00000050"
+
+    }
+}
+
+
+/////////////////////
+//  WINDOW LAYOUT  //
+/////////////////////
+
+layout {
+    gaps 2
+    center-focused-column "never"
+    preset-column-widths {
+        proportion 0.25
+        proportion 0.5
+        proportion 0.75
+        proportion 1.0
+    }
+    focus-ring {
+        off
+    }
+
+    border {
+        on
+        width 2
+    }
+
+    default-column-width { proportion 0.5; }
+    background-color "transparent"
+    struts {
+        left 2
+        right 2
+        top 2
+        bottom 2
+    }
+}
+
+// Enable the top-left hot corner.
+gestures {
+    hot-corners {
+        top-left
+    }
+}
+
+
+//////////////////
+//  ENVIROMENT  //
+//////////////////
+
+environment {
+    LD_PRELOAD ""
+    MOZ_ENABLE_WAYLAND "1"
+    MOZ_DBUS_REMOTE "1"
+    GDK_BACKEND "wayland"
+    QT_AUTO_SCREEN_SCALE_FACTOR "1"
+    QT_WAYLAND_FORCE_DPI "physical"
+    QT_QPA_PLATFORM "wayland"
+    EGL_PLATFORM "wayland"
+    CLUTTER_BACKEND "wayland"
+    TERM "foot"
+    TERMINAL "foot"
+    _JAVA_AWT_WM_NONREPARENTING "1"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    QT_QPA_PLATFORMTHEME "qt6ct"
+   
+// NVIDIA Specific
+    __GLX_VENDOR_LIBRARY_NAME "nvidia"
+    GBM_BACKEND "nvidia-drm"
+    LIBVA_DRIVER_NAME "nvidia"
+    VDPAU_DRIVER "nvidia"
+    NVD_BACKEND "direct"   
+    ELECTRON_OZONE_PLATFORM_HINT "wayland"
+
+// Gaming, Sync & Frame-Pacing Fixes voor Niri
+    __GL_VRR_ALLOWED "1"
+    __GL_GSYNC_ALLOWED "1"
+    __GL_DXVK_USE_LAST_PIPELINE_CACHE "1"
+    __GL_SYNC_TO_VBLANK "0"
+}
+
+
+////////////////////
+//  CSD & HOTKEY  //
+////////////////////
+
+prefer-no-csd
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+
+///////////////////////////
+//  SCREENSHOT SETTINGS  //
+///////////////////////////
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+//screenshot-path null
+screenshot-notification-disable
+
+
+///////////////////////
+//  NIRI ANIMATIONS  //
+///////////////////////
+
+    // Uncomment to turn off all animations.
+    // off
+
+    // Slow down all animations by this factor. Values below 1 speed them up instead.
+    // Individual animations.
+
+include "animations/current_animation.kdl"
+
+
+////////////////////
+//  WINDOW RULES  //
+////////////////////
+
+
+window-rule {
+    match app-id="^steam$" title="^Friends List$"
+    opacity 1.0
+    open-maximized false
+    default-column-width { proportion 0.25; }
+}
+
+window-rule {
+    match app-id="^steam$" title="^Steam$"
+    opacity 1.0
+    open-maximized false
+    default-column-width { proportion 0.75; }
+}
+
+window-rule {
+    match app-id="^steam$"
+    opacity 1.0
+    open-maximized false
+}
+
+window-rule {
+    match app-id="^steam_app_.*$"
+    opacity 1.0
+    variable-refresh-rate true
+    open-maximized false
+    // Games usually 1.0 (Full Width)
+    default-column-width { proportion 1.0; }
+}
+
+window-rule {
+    match app-id="steam" title=r"^notificationtoasts_\d+_desktop$"
+    opacity 1.0
+    default-floating-position x=10 y=10 relative-to="bottom-right"
+}
+
+window-rule {
+    geometry-corner-radius 20
+    clip-to-geometry true
+    draw-border-with-background false
+    background-effect {
+        xray false
+    }
+}
+
+window-rule {
+    match app-id=r"^steam_app_\d+$"
+    opacity 1.0
+    open-fullscreen true
+    variable-refresh-rate true
+}
+
+////////////////
+//  KEYBINDS  //
+////////////////
+
+// LAUNCHER KEYBINDS //
+
+binds {
+    Mod+Shift+Slash { show-hotkey-overlay; }
+    
+    Mod+B { spawn "firefox"; }
+    Mod+N { spawn "helium"; }
+    Mod+Shift+F { spawn "nemo"; }
+    Mod+Return { spawn "foot"; }
+//  Mod+T { spawn "sh" "-c" "otter-transcribectl toggle"; }
+    Mod+M { spawn "otter-monitor"; }
+//  Mod+W { spawn "sh" "-c" "otter-wallpaper --random"; }
+
+
+// OTTER-LAUNCHER TOGGLE
+    Mod+Space { spawn "sh" "-c" "pkill otter-launcher || otter-launcher"; }
+    
+// CAPSLOCK / NUMLOCK   
+    Caps_Lock allow-when-locked=true { spawn "sh" "-c" "otter-osd caps-lock && wtype -k Caps_Lock"; }
+    Num_Lock allow-when-locked=true { spawn "sh" "-c" "otter-osd num-lock && wtype -k Num_Lock"; }
+	
+
+// AUDIO KEYBINDS //
+
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "otter-osd" "volume-up" "5"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "otter-osd" "volume-down" "5"; }
+    XF86AudioMute allow-when-locked=true { spawn "otter-osd" "volume-mute-toggle"; }
+    
+// BRIGHTNESS KEYBINDS //
+
+    XF86MonBrightnessUp allow-when-locked=true { spawn-sh "brightnessctl set +5% && otter-osd brightness"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn-sh "brightnessctl set 5%- && otter-osd brightness"; }
+
+// WINDOW MANAGGER KEYBINDS //
+    //Close Column
+    Mod+Q { close-window; }
+
+    //Focus Column
+    Mod+Left  { focus-column-left; }
+    Mod+Right { focus-column-right; }
+
+    Mod+Home { focus-column-first; }
+    Mod+End  { focus-column-last; }
+
+
+    //Switch Monitor Focus
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Right { focus-monitor-right; }
+    
+    
+    //Move column
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+Down  { move-column-to-workspace-down; }
+    Mod+Ctrl+Up    { move-column-to-workspace-up; }
+    
+    Mod+Ctrl+Home { move-column-to-first; }
+    Mod+Ctrl+End  { move-column-to-last; }
+    
+    
+    
+    //move column between monitors
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+             
+
+    //Window Stacking
+    Mod+P { toggle-column-tabbed-display; }
+    Mod+Up   { focus-window-up; }
+    Mod+Down { focus-window-down; }
+    
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+    Mod+Comma  { consume-window-into-column; }
+    Mod+Period { expel-window-from-column; }
+    
+
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp cooldown-ms=150 { move-column-to-workspace-up; }
+
+    Mod+Shift+WheelScrollDown      { focus-column-right; }
+    Mod+Shift+WheelScrollUp        { focus-column-left; }
+    Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+
+
+    //workspaces
+    Mod+Page_Down  { focus-workspace-down; }         
+    Mod+Page_Up    { focus-workspace-up; }   
+    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
+
+    //Resize Column
+    Mod+R { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-window-height; }
+    Mod+Ctrl+R { reset-window-height; }
+    Mod+F { maximize-column; }
+    Mod+Ctrl+F { fullscreen-window; }
+    Mod+C { center-column; }
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+    Mod+Ctrl+V       { toggle-window-floating; }
+    //Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+
+// Shutdown-Logout
+   Ctrl+Alt+Delete { spawn "otter-logout"; }
+}
+
+// DEBUG
+
+debug {
+//  disable-direct-scanout
+}
+

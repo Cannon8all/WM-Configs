@@ -1,0 +1,317 @@
+# Umbriel configuration
+# ==============================================================================
+# Includes
+
+# Optional split configuration
+# https://docs.noctalia.dev/umbriel/configuration/#include
+#[include]
+#files = []
+
+#[include.optional]
+#files = []
+
+# ==============================================================================
+# General
+# ==============================================================================
+
+[general]
+autostart = ["otter-bar", "otter-wallpaper", "otter-osd", "otter-notifications", "otter-polkit", "otter-idle", "otter-theme-gen"]
+xwayland = true
+
+show_cheatsheet = false
+
+# ==============================================================================
+# Outputs
+# ==============================================================================
+# Outputs are machine-specific. Run `umbriel outputs` to find names and modes.
+
+[output.DP-1]
+mode = "2560x1440@165"
+position = [0, 0]
+scale = 1.0
+vrr = "fullscreen"
+# hdr = "auto"
+
+[output.DP-3]
+mode = "2560x1440@60"
+position = [2560, 0]
+scale = 1.0
+# vrr = "fullscreen"
+# hdr = "auto"
+
+# ==============================================================================
+# Enviroment
+# ==============================================================================
+
+[environment]
+ELECTRON_OZONE_PLATFORM_HINT = "auto"
+SDL_VIDEODRIVER = "wayland"
+
+# ==============================================================================
+# Appearance
+# ==============================================================================
+[appearance]
+prefer_no_csd = true
+border_width = 2
+outer_border_width = 0
+corner_radius = 12
+drag_opacity = 0.75
+opaque_fullscreen = true
+
+
+[appearance.blur]
+enabled = false
+optimized = false
+passes = 3
+radius = 5
+noise = 0.02
+brightness = 0.9
+contrast = 0.9
+saturation = 1.1
+
+[layout.struts]
+left = 0
+right = 0
+top = 0
+bottom = 0
+
+[layout]
+extent_presets = [0.25, 0.5, 0.75, 1.0]
+gap = 4
+
+[layout.scrolling]
+default_extent_fraction = 0.5
+center_underfull_strip = false
+
+#[appearance.shadow]
+#enabled = true
+#softness = 10
+#offset_x = 2
+#offset_y = 2
+
+# ==============================================================================
+# Colors
+# ==============================================================================
+
+# Choose the background color shown if the lock screen takes too long to appear.
+# [colors]
+#background = "#141419FF"
+#text_primary = "#E8E8EAFF"
+#text_muted = "#8A8A92FF"
+#accent_primary = "#7AA3FFFF"
+#accent_secondary = "#F5C96BFF"
+#warning = "#F5C96BFF"
+#error = "#FF6B6BFF"
+#insert_hint = "#7FC8FF80"
+#backdrop = "#000000FF"
+#shadow = "#0000007F"
+
+#[colors.overview]
+#background_tint = "#10101430"
+#workspace_background = "#00000044"
+#badge = "#7AA3FFFF"
+
+# ==============================================================================
+# Input
+# ==============================================================================
+
+[input.keyboard]
+numlock_toggle = true
+
+[input.mouse]
+natural_scroll = false
+accel_profile = "flat"
+sensitivity = 0.0
+scroll_wheel_step = 60
+
+[input.focus]
+follows_mouse = true
+follows_mouse_max_scroll = 0.5
+
+# ==============================================================================
+# Keybinds
+# ==============================================================================
+
+[keybinds]
+
+# Applications and session
+"Mod+Return" = "spawn:foot"
+"Mod+Space" = "spawn:otter-launcher"
+"Ctrl+Alt+Delete" = "spawn:otter-logout"
+"Mod+B" = "spawn:firefox"
+"Mod+M" = "spawn:otter-monitor"
+"Print" = "spawn:f=~/Pictures/Screenshots/Screenshot-$(date +%Y-%m-%d_%H-%M-%S).png; otter-screenshot --freeze --output \"$f\" && wl-copy --type image/png < \"$f\""
+"Mod+Shift+F" = "spawn:nemo"
+
+# Close Column
+"Mod+Q" = "window-close"
+
+# Focus Column
+"Mod+Left" = "window-focus-left"
+"Mod+Right" = "window-focus-right"
+"Mod+Home" = "column-focus-first"
+"Mod+End" = "column-focus-last"
+
+# Fullscreen Window 
+"Mod+Ctrl+F" = "window-toggle-fullscreen"
+"Mod+F" = "window-toggle-maximize"
+
+# Floating Window
+"Mod+Ctrl+V" = "window-toggle-floating"
+
+# Switch Monitor Focus
+"Mod+Shift+Left" = "output-focus-left"
+"Mod+Shift+Right" = "output-focus-right"
+
+# Move column
+"Mod+Ctrl+Left" = "column-move-left"
+"Mod+Ctrl+Right" = "column-move-right"
+
+"Mod+Ctrl+Down" = "column-move-to-workspace-next"
+"Mod+Ctrl+Up" = "column-move-to-workspace-previous"
+
+"Mod+Ctrl+Home" = "column-move-to-first"
+"Mod+Ctrl+End" = "column-move-to-last"
+
+# Move column between monitors
+"Mod+Shift+Ctrl+Left" = "column-move-to-output-left"
+"Mod+Shift+Ctrl+Right" = "column-move-to-output-right"
+
+"Mod+Tab" = { action = "overview-toggle", repeat = true }
+
+# Quarter window left and right
+"Mod+BracketLeft" = "window-consume-or-expel-left"
+"Mod+BracketRight" = "window-consume-or-expel-right"
+
+# Resize according to window presets
+# "Mod+E" = "window-cycle-primary-extent-back"
+"Mod+R" = "window-cycle-primary-extent"
+
+# Workspaces
+"Mod+1" = "workspace-switch:1"
+"Mod+2" = "workspace-switch:2"
+"Mod+3" = "workspace-switch:3"
+"Mod+4" = "workspace-switch:4"
+"Mod+5" = "workspace-switch:5"
+"Mod+6" = "workspace-switch:6"
+"Mod+7" = "workspace-switch:7"
+"Mod+8" = "workspace-switch:8"
+"Mod+9" = "workspace-switch:9"
+"Mod+Shift+1" = "window-move-to-workspace:1"
+"Mod+Shift+2" = "window-move-to-workspace:2"
+"Mod+Shift+3" = "window-move-to-workspace:3"
+"Mod+Shift+4" = "window-move-to-workspace:4"
+"Mod+Shift+5" = "window-move-to-workspace:5"
+"Mod+Shift+6" = "window-move-to-workspace:6"
+"Mod+Shift+7" = "window-move-to-workspace:7"
+"Mod+Shift+8" = "window-move-to-workspace:8"
+"Mod+Shift+9" = "window-move-to-workspace:9"
+
+# Scratchpad
+#"Mod+Shift+Space" = "window-move-to-scratchpad"
+#"Mod+Space" = "scratchpad-toggle"
+#"Mod+Ctrl+Space" = "window-restore-from-scratchpad"
+#"Mod+Tab" = "scratchpad-focus-next"
+
+# ==============================================================================
+# Window rules
+# ==============================================================================
+# Blur windows using the non-optimized path so translucent windows include
+# overlapping windows behind them.
+
+[[window_rule]]
+blur = false
+blur_optimized = false
+
+[[window_rule]]
+match.title = "^(Picture-in-Picture|Picture in picture)$"
+default_floating = true
+default_maximize = false
+default_position = { x = 20, y = 20, anchor = "bottom_right" }
+
+[[window_rule]]
+match.title = "^notificationtoasts_.+_desktop"
+default_position = { x = 0, y = 0, anchor = "bottom_right" }
+default_focused = false
+default_pinned = true
+
+[[window_rule]]
+match.app_id = "^steam$"
+default_scrolling_extent = 0.75
+
+[[window_rule]]
+match.app_id = "^steam$"
+match.title = "^Friends List$"
+default_scrolling_extent = 0.25
+
+# ==============================================================================
+# Layer rules
+# ==============================================================================
+
+# https://docs.noctalia.dev/umbriel/layer-rules/
+#[[layer_rule]]
+#match.namespace = "^otter"
+
+# ==============================================================================
+# Overview
+# ==============================================================================
+
+[hot_corners.top_left]
+enabled = true
+delay_ms = 100
+action = "overview-open"
+
+# =============================================================================
+# Animations
+# =============================================================================
+
+[animation]
+enabled = true
+duration_ms = 250
+curve = "easeout"
+
+[animation.windows_in]
+enabled = true
+curve = "spring:1,900"
+style = "popin"
+scale = 0.5
+
+[animation.windows_out]
+enabled = true
+curve = "spring:1,1000"
+style = "popin"
+scale = 0.8
+
+[animation.windows_move]
+enabled = true
+curve = "spring:1,700"
+
+[animation.workspaces]
+enabled = true
+curve = "spring:1,800"
+
+[animation.overview]
+enabled = true
+curve = "spring:1,800"
+workspace_curve = "spring:1,1000"
+
+[animation.scratchpad]
+enabled = true
+curve = "spring:1,800"
+dim = 0.8
+blur = false
+scale = 0.0
+maximize = false
+fullscreen = false
+
+[animation.border]
+enabled = true
+curve = "spring:1,900"
+
+[animation.dim_unfocused]
+enabled = false
+curve = "spring:1,900"
+dim = 0.15
+
+[animation.layers]
+enabled = true

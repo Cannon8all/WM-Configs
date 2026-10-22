@@ -1,0 +1,426 @@
+///////////////
+//  KEYBOARD  //
+////////////////
+
+
+input {
+    keyboard {
+        xkb {
+            layout "us" 
+        }
+        repeat-delay 300
+        repeat-rate 30
+	numlock
+ }
+
+
+////////////////
+//  TOUCHPAD  //
+////////////////
+
+    touchpad {
+        tap
+        natural-scroll
+    }
+
+
+/////////////
+//  MOUSE  //
+/////////////
+
+mouse {
+        accel-profile "flat"
+    }
+    focus-follows-mouse max-scroll-amount="0%"
+}
+
+
+////////////////
+//  DISPLAYS  //
+////////////////
+
+output "DP-1" {
+    mode "2560x1440@143.998"
+    scale 1
+    transform "normal"
+    variable-refresh-rate on-demand=true
+    position x=0 y=0
+}
+
+output "DP-3" {
+    mode "2560x1440@59.951"
+    scale 1
+    transform "normal"
+//  variable-refresh-rate on-demand=true
+    position x=0 y=0
+}
+
+
+/////////////////////
+//  WINDOW LAYOUT  //
+/////////////////////
+
+layout {
+    gaps 1
+    center-focused-column "never"
+    preset-column-widths {
+        proportion 0.25
+        proportion 0.5
+        proportion 0.75
+        proportion 1.0
+    }
+
+    focus-ring {
+        off
+    }
+
+    default-column-width { proportion 0.5; }
+    
+    background-color "transparent"   
+
+    border {
+        width 2
+        active-gradient from="#da70d6" to="#00ffff" angle=45
+        inactive-color "#04404A"
+    }
+
+    struts {
+        left 2
+        right 2
+        top 2
+        bottom 2
+    }
+    shadow {
+        softness 40
+        color "#00000064" // Semi-transparent black
+        spread 2
+    }
+}
+
+
+// Enable the top-left hot corner.
+gestures {
+    hot-corners {
+        top-left
+    }
+}
+
+
+//////////////////////////
+// Overview/ wallpaper  //
+//////////////////////////
+
+layer-rule {
+match namespace="^otter-wallpaper*"
+place-within-backdrop true
+}
+
+overview {
+  zoom 0.5
+  backdrop-color "#262626"
+  
+  workspace-shadow {
+//    off
+    softness 70
+    spread 20
+    offset x=0 y=20
+    color "#00000050"
+
+  }
+  
+}
+
+
+///////////////
+//  STARTUP  //
+///////////////
+
+spawn-at-startup "otter-bar"
+spawn-at-startup "otter-wallpaper"
+spawn-at-startup "otter-osd"
+spawn-at-startup "otter-notifications"
+spawn-at-startup "otter-polkit"
+spawn-at-startup "otter-idle"
+
+//spawn-at-startup "noctalia"
+
+
+//////////////////
+//  ENVIROMENT  //
+//////////////////
+
+environment {
+    LD_PRELOAD ""
+    MOZ_ENABLE_WAYLAND "1"
+    MOZ_DBUS_REMOTE "1"
+    GDK_BACKEND "wayland"
+    QT_AUTO_SCREEN_SCALE_FACTOR "1"
+    QT_WAYLAND_FORCE_DPI "physical"
+    QT_QPA_PLATFORM "wayland"
+    EGL_PLATFORM "wayland"
+    CLUTTER_BACKEND "wayland"
+    TERM "foot"
+    TERMINAL "foot"
+    _JAVA_AWT_WM_NONREPARENTING "1"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    QT_QPA_PLATFORMTHEME "qt6ct"
+   
+// NVIDIA Specific
+    __GLX_VENDOR_LIBRARY_NAME "nvidia"
+    GBM_BACKEND "nvidia-drm"
+    LIBVA_DRIVER_NAME "nvidia"
+    VDPAU_DRIVER "nvidia"
+    NVD_BACKEND "direct"   
+    ELECTRON_OZONE_PLATFORM_HINT "wayland"
+
+// Gaming, Sync & Frame-Pacing Fixes voor Niri
+    __GL_VRR_ALLOWED "1"
+    __GL_GSYNC_ALLOWED "1"
+    __GL_MAX_FRAMES_ALLOWED "1"
+    __GL_SYNC_TO_VBLANK "0"
+    __GL_DXVK_USE_LAST_PIPELINE_CACHE "1"
+    
+// Proton / Wine
+    PROTON_ENABLE_EXT_SYNC "1"
+    WINE_DISABLE_FAST_SYNC "0"
+    
+}
+
+
+////////////////////
+//  CSD & HOTKEY  //
+////////////////////
+
+prefer-no-csd
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+
+///////////////////////////
+//  SCREENSHOT SETTINGS  //
+///////////////////////////
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+//screenshot-path null
+screenshot-notification-disable
+
+
+///////////////////////
+//  NIRI ANIMATIONS  //
+///////////////////////
+
+    // Uncomment to turn off all animations.
+    // off
+
+    // Slow down all animations by this factor. Values below 1 speed them up instead.
+    // Individual animations.
+
+include "animations/current_animation.kdl"
+
+
+////////////////////
+//  WINDOW RULES  //
+////////////////////
+
+window-rule {
+    match app-id="^steam$" title="^Friends List$"
+    open-maximized false
+    default-column-width { proportion 0.25; }
+}
+
+window-rule {
+    match app-id="^steam$" title="^Steam$"
+    open-maximized false
+    default-column-width { proportion 0.75; }
+}
+
+window-rule {
+    match app-id="^steam$"
+    open-maximized false
+}
+
+window-rule {
+    match app-id="^steam_app_.*$"
+    variable-refresh-rate true
+    open-maximized false
+    // Games usually 1.0 (Full Width)
+    default-column-width { proportion 1.0; }
+}
+
+window-rule {
+    match app-id="steam" title=r#"^notificationtoasts_\d+_desktop$"#
+    default-floating-position x=10 y=10 relative-to="bottom-right"
+}
+
+window-rule {
+    geometry-corner-radius 20
+    clip-to-geometry true
+}
+
+window-rule {
+    match app-id=r#"^steam_app_\d+$"#
+    open-fullscreen true
+}
+
+window-rule {
+    match app-id=".*" 
+    draw-border-with-background false
+}
+
+//window-rule {
+//  match app-id="dev.noctalia.Noctalia.Settings"
+//  open-floating true
+//  default-column-width { fixed 1080; }
+//  default-window-height { fixed 920; }
+//}
+
+
+////////////////
+//  KEYBINDS  //
+////////////////
+
+// LAUNCHER KEYBINDS //
+
+binds {
+    Mod+Shift+Slash { show-hotkey-overlay; }
+    Mod+Return { spawn "foot"; }
+
+// Spawn otter-launcher one time
+//  Mod+Space { spawn "sh" "-c" "pgrep otter-launcher || otter-launcher"; }
+
+// Spawn and toggle otter-launcher
+    Mod+Space { spawn "sh" "-c" "pkill otter-launcher || otter-launcher"; }
+
+// Spawn Noctalia v5 Launcher
+//    Mod+Space { spawn-sh "noctalia msg panel-toggle launcher"; }
+
+    Mod+B { spawn "firefox"; }    
+    
+    Caps_Lock allow-when-locked=true { spawn "sh" "-c" "otter-osd caps-lock && wtype -k Caps_Lock"; } 
+    Num_Lock allow-when-locked=true { spawn "sh" "-c" "otter-osd num-lock && wtype -k Num_Lock"; }	
+
+// AUDIO KEYBINDS //
+
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "otter-osd" "volume-up" "5"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "otter-osd" "volume-down" "5"; }
+    XF86AudioMute        allow-when-locked=true { spawn "otter-osd" "volume-mute-toggle"; }
+    
+    //XF86AudioRaiseVolume { spawn "noctalia" "msg" "volume-up"; }
+    //XF86AudioLowerVolume { spawn "noctalia" "msg" "volume-down"; }
+    //XF86AudioMute { spawn "noctalia" "msg" "volume-mute"; }
+
+// BRIGHTNESS KEYBINDS //
+
+    XF86MonBrightnessUp   allow-when-locked=true { spawn-sh "brightnessctl set +5% && otter-osd brightness"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn-sh "brightnessctl set 5%- && otter-osd brightness"; }
+
+    //XF86MonBrightnessUp { spawn "noctalia" "msg" "brightness-up"; }
+    //XF86MonBrightnessDown { spawn "noctalia" "msg" "brightness-down"; }
+    
+    
+// WINDOW MANAGGER KEYBINDS //
+
+    Mod+Q { close-window; }
+
+    Mod+Left  { focus-column-left; }
+    Mod+Right { focus-column-right; }
+
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Down       { focus-workspace-down; }
+    Mod+Page_Down  { focus-workspace-down; }
+    Mod+Up         { focus-workspace-up; }
+    Mod+Page_Up    { focus-workspace-up; }
+    Mod+Ctrl+Down  { move-column-to-workspace-down; }
+    Mod+Ctrl+Up    { move-column-to-workspace-up; }
+
+    Mod+Home { focus-column-first; }
+    Mod+End  { focus-column-last; }
+    Mod+Ctrl+Home { move-column-to-first; }
+    Mod+Ctrl+End  { move-column-to-last; }
+
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Right { focus-monitor-right; }
+
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+
+    Mod+Shift+Page_Down { move-workspace-down; }
+    Mod+Shift+Page_Up   { move-workspace-up; }
+    Mod+Shift+U         { move-workspace-down; }
+    Mod+Shift+I         { move-workspace-up; }
+
+    //Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    //Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+
+    Mod+WheelScrollDown      { focus-column-right; }
+    Mod+WheelScrollUp       { focus-column-left; }
+    Mod+Ctrl+WheelScrollRight { move-column-right; }
+    Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+
+    Mod+Shift+WheelScrollDown      { focus-column-right; }
+    Mod+Shift+WheelScrollUp        { focus-column-left; }
+    Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
+
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+    Mod+Comma  { consume-window-into-column; }
+    Mod+Period { expel-window-from-column; }
+
+    Mod+R { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-window-height; }
+    Mod+Ctrl+R { reset-window-height; }
+    Mod+F { maximize-column; }
+    Mod+Ctrl+F { fullscreen-window; }
+    Mod+Shift+F { spawn "nautilus"; }
+    Mod+C { center-column; }
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+    Mod+V       { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+
+// Shutdown-Logout
+   Ctrl+Alt+Delete { spawn "otter-logout"; }
+}
+
+
+// Direct-Scanout
+
+debug {
+//  disable-direct-scanout
+restrict-primary-scanout-to-matching-format
+//honor-xdg-activation-with-invalid-serial
+}
+
+
+//include "noctalia.kdl"
